@@ -1,4 +1,4 @@
-<!DOCTYPE html>     <!--redirect javascript-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,19 +7,31 @@
     <link rel="stylesheet" href="css/styles2.css">
 </head>
 <body>
-    <body>
-        <div class="login-container">
-            <h2>Admin Login</h2>
-            <form action="AdminLoginServlet" method="POST">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-    
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-    
-                <button type="submit">Login</button>
-            </form>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+
+        <!-- Error Message Container -->
+        <div id="errorMsg" style="color:red; display:none; margin-bottom: 10px;">
+            Invalid credentials. Please try again.
         </div>
-    </body>
+
+        <form action="AdminLoginServlet" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        // Show error message if "error=true" is in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'true') {
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
