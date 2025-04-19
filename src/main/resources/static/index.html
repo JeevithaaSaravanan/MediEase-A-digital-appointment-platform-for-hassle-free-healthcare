@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Life Hospital</title>
+    <!-- Corrected path to the CSS file -->
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        function redirectToLogin() {
+            window.location.href = "login.html"; // Redirect to login page
+        }
+        // Hide login form when clicking anywhere outside it
+        document.addEventListener("click", function(event) {
+            const loginForm = document.getElementById("login-container");
+            if (loginForm && !loginForm.contains(event.target)) {
+                loginForm.style.display = "none"; // Hide form
+            }
+        });
+    </script>
+</head>
+<body class="home-page">
+   
+    <div class="navigation">
+        <ul>
+            <li><a href="#" id="homeBtn">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a onclick="redirectToLogin()">Admin</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="mainContent">
+        <h1>Welcome to New Life Hospital</h1>
+        <p>Click below to register for an appointment.</p>
+        <button class="btn" id="registerBtn">For Appointments click here</button>
+        
+        <!-- Form Container (Initially Hidden) -->
+        <div class="form-container hidden" id="registrationForm">
+            <h2>Patient Registration Form</h2>
+            <form action="submit_registration.php" method="POST">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+                
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="Select">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required>
+                
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required>
+                
+                <label for="mobile_number">Mobile Number:</label>
+                <input type="tel" id="mobile_number" name="mobile_number" required>
+                
+                <label for="alternate_number">Alternate Mobile Number:</label>
+                <input type="tel" id="alternate_number" name="alternate_number">
+                
+                <input type="submit" value="Register Appointment">
+            </form>
+        </div>
+    </div>
+    <div class="image-gallery">
+        <img src="images/img1.jpg" alt="Hospital Image 1">
+        <img src="images/img2.jpg" alt="Hospital Image 2">
+        <img src="images/img3.jpg" alt="Hospital Image 3">
+    </div>
+    <div class="footer">
+        <p>&copy; 2025 New Life Hospital. All rights reserved.</p>
+        <p>Website designed by Jeevithaa Saravanan</p>
+    </div>
+
+    <!-- Corrected path to the JS file -->
+    <script src="js/scripts.js"></script>
+</body>
+</html>

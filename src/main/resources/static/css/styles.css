@@ -1,0 +1,339 @@
+/* Basic styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+     min-height: 100vh; 
+}
+.home-page {
+    background-image: url('img7.jpg'); /* Replace with your image path */
+    background-size: cover; /* Ensures the image covers the full screen */
+    background-position: center; /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents image repetition */
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+}
+
+
+
+/* Navigation Bar */
+.navigation {
+    background-color: #2c3e50;
+    padding: 20px 0; /* Increased padding for a wider navbar */
+    text-align: center;
+    width: 100%;
+}
+
+.navigation ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navigation ul li {
+    display: inline;
+    margin: 0 30px; /* Increased margin between items */
+}
+
+.navigation ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px; /* Increased font size */
+}
+
+.navigation ul li a:hover {
+    color: #3498db;
+}
+
+/* Content Area */
+.content {
+    flex-grow: 1;
+    padding: 30px;
+    background: linear-gradient(to bottom, #e6ecf5, #f4f7fc); /* Soft gradient */
+    border-radius: 10px; /* Smooth rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    max-width: 800px;
+    margin: 20px auto; /* Center align */
+    text-align: center; /* Center text */
+}
+
+.content h2 {
+    font-size: 28px;
+    color: #2c3e50; /* Navy Blue */
+    margin-bottom: 10px;
+}
+
+.content p {
+    font-size: 18px;
+    color: #34495e; /* Dark Grayish Blue */
+    line-height: 1.6;
+}
+
+.content p:last-child {
+    font-weight: bold;
+    color: #1a5276; /* Slightly deeper blue for emphasis */
+}
+
+
+/* Button Styling */
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+/* Form Container Styling */
+.form-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px; 
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
+    width: 90%; 
+    max-width: 450px; 
+    max-height: 90vh; 
+    overflow-y: auto; 
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animations */
+}
+
+/* Input Fields */
+input[type="text"], input[type="number"], input[type="tel"], input[type="date"], select {
+    width: 80%; /* Reduced width to make fields shorter */
+    padding: 10px; /* Balanced padding */
+    margin: 10px auto; /* Adjusted margin for spacing */
+    border: 2px solid #ccc; /* Slightly thicker border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 14px; /* Reduced font size for compactness */
+    display: block; /* Center-align the fields */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+input[type="text"]:focus, 
+input[type="number"]:focus, 
+input[type="tel"]:focus, 
+input[type="date"]:focus, 
+select:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4); /* Green glow effect */
+    outline: none;
+}
+
+
+/* Submit Button */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px; /* Increased font size */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth animations */
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+    transform: scale(1.02); /* Slight enlargement on hover */
+}
+
+input[type="submit"]:active {
+    transform: scale(0.98); /* Button shrinks slightly on click */
+}
+
+/* Optional Overlay */
+body::before {
+    content: '';
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 999;
+}
+
+body.overlay-active::before {
+    display: block;
+}
+body.admin-page {
+    background: none; /* Or any specific styling */
+}
+
+/* Image Gallery Styling */
+.home-page .image-gallery {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    padding: 30px 20px; 
+    background-color: #eef2f7;
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin: 30px auto; 
+    max-width: 90%; 
+}
+
+.image-gallery img {
+    width: 300px; 
+    height: auto; 
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.image-gallery img:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+}
+
+
+/* Footer Styling */
+.footer {
+    text-align: center;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px 0; /* Increased padding for a larger footer */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: auto;
+    font-size: 18px; /* Increased font size for better readability */
+}
+.hidden {
+    display: none;
+}
+
+.admin-header {
+    background-color: #34495e;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.admin-nav {
+    background-color: #2c3e50;
+    padding: 10px;
+}
+
+.admin-nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.admin-nav ul li {
+    margin: 0 15px;
+}
+
+.admin-nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.admin-nav ul li a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+table th {
+    background-color: #34495e;
+    color: white;
+}
+
+
+.footer p {
+    margin: 5px;
+}
+
+.footer a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold; /* Added bold effect for links */
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+#doctorSection {
+    margin-left: 20px; /* Moves the section 20px away from the left edge */
+    padding: 20px; /* Adds padding inside the section for better spacing */
+    border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
+    border-radius: 5px; /* Optional: Rounded corners for aesthetics */
+    background-color: #f9f9f9; /* Subtle background color for the form */
+    width: auto; /* Ensures the form doesn't stretch across the entire width */
+    max-width: 30%; /* Optional: Set a max width to prevent the form from stretching too far */
+    box-sizing: border-box; /* Ensures padding is included in the width calculation */
+    margin-top:30px;
+}
+
+
+#doctorSection form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds spacing between form elements */
+    max-width: 300px; /* Limits the width of the form */
+}
+
+#doctorSection label {
+    font-size: 14px; /* Slightly smaller font size for labels */
+    margin-bottom: 5px; /* Space between label and input field */
+}
+
+#doctorSection input[type="text"],
+#doctorSection select {
+    padding: 5px; /* Reduces padding inside input boxes */
+    font-size: 14px; /* Maintains readable font size */
+    width: 100%; /* Ensures input fields adjust within the container */
+    box-sizing: border-box; /* Includes padding in width calculation */
+    border: 1px solid #ccc; /* Adds a subtle border */
+    border-radius: 5px; /* Rounded corners for better appearance */
+}
+
+#doctorSection input[type="submit"] {
+    background-color: #007bff; /* Blue button */
+    color: white; /* White text */
+    border: none; /* Removes border */
+    padding: 8px 10px; /* Adds padding */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Maintains button font size */
+    text-align: center; /* Centers text in the button */
+}
+
+#doctorSection input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
