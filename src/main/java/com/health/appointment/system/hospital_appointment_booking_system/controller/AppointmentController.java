@@ -1,4 +1,4 @@
-package com.health.appointment.system.hospital_appointment_booking_system.controller;
+/*package com.health.appointment.system.hospital_appointment_booking_system.controller;
 
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Appointment;
 import com.health.appointment.system.hospital_appointment_booking_system.exception.AppointmentConflictException;
@@ -62,4 +62,4 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-}
+}*/

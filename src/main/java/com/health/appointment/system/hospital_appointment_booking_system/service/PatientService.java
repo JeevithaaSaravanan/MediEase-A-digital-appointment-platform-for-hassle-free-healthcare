@@ -1,16 +1,33 @@
 package com.health.appointment.system.hospital_appointment_booking_system.service;
 
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Patient;
-import com.health.appointment.system.hospital_appointment_booking_system.exception.PatientNotFoundException;
+import java.time.LocalDate;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface PatientService {
+
     Patient savePatient(Patient patient);
+
     List<Patient> getAllPatients();
-    Optional<Patient> getPatientById(Long id) throws PatientNotFoundException;
-    Patient updatePatient(Patient patient) throws PatientNotFoundException;
-    void deletePatient(Long id) throws PatientNotFoundException;
-    List<Patient> findByAgeBetween(int minAge, int maxAge);
-    Optional<Patient> findByMobile(String mobile);
+
+    Patient getPatientById(Long id);
+
+    void deletePatientById(Long id);
+
+    List<Patient> findByGender(String gender);
+
+    List<Patient> findByState(String state);
+
+    List<Patient> findByCity(String city);
+
+    List<Patient> findByEmail(String email);
+
+    List<Patient> findByAlternateMobileNumber(String alternateMobileNumber);
+
+    List<Patient> findByPayment(String payment);
+
+    List<Patient> searchByName(String name);
+
+    List<Patient> findByAppointmentDate(LocalDate appointmentDate);
 }

@@ -6,24 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-
-    /**
-     * Finds doctors by their specialization
-     * @param specialization The medical specialization to search for
-     * @return List of doctors with matching specialization
-     */
-    List<Doctor> findBySpecializationContainingIgnoreCase(String specialization);
-
-    /**
-     * Finds a doctor by exact contact number
-     * @param contact The exact contact number to search
-     * @return Optional containing the doctor if found
-     */
-    Optional<Doctor> findByContact(String contact);
 
     /**
      * Searches doctors by name (case-insensitive partial match)

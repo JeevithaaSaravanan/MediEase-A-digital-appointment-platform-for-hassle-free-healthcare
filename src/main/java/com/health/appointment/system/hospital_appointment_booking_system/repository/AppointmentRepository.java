@@ -1,4 +1,4 @@
-package com.health.appointment.system.hospital_appointment_booking_system.repository;
+/*package com.health.appointment.system.hospital_appointment_booking_system.repository;
 
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,24 +14,24 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     /**
      * Finds appointments by patient ID
      */
-    List<Appointment> findByPatientId(Long patientId);
+   // List<Appointment> findByPatientId(Long patientId);
 
     /**
      * Finds appointments by doctor ID
      */
-    List<Appointment> findByDoctorId(Long doctorId);
+    //List<Appointment> findByDoctorId(Long doctorId);
 
     /**
      * Finds appointments within a date range
      */
-    @Query("SELECT a FROM Appointment a WHERE a.appointmentDateTime BETWEEN :start AND :end")
-    List<Appointment> findAppointmentsBetweenDates(
-            LocalDateTime start,
-            LocalDateTime end
-    );
+    //@Query("SELECT a FROM Appointment a WHERE a.appointmentDateTime BETWEEN :start AND :end")
+    //List<Appointment> findAppointmentsBetweenDates(
+      //      LocalDateTime start,
+        //    LocalDateTime end
+    //);
 
     /**
      * Checks if a time slot is already booked for a doctor
      */
-    boolean existsByDoctorIdAndAppointmentDateTime(Long doctorId, LocalDateTime appointmentDateTime);
-}
+   // boolean existsByDoctorIdAndAppointmentDateTime(Long doctorId, LocalDateTime appointmentDateTime);
+//}

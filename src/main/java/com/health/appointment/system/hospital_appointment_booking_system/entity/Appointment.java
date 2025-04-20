@@ -1,4 +1,4 @@
-package com.health.appointment.system.hospital_appointment_booking_system.entity;
+/*package com.health.appointment.system.hospital_appointment_booking_system.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -69,4 +69,4 @@ public class Appointment {
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
     }
-}
+}*/

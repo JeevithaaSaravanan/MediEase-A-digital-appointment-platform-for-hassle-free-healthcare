@@ -1,4 +1,4 @@
-package com.health.appointment.system.hospital_appointment_booking_system.service;
+/*package com.health.appointment.system.hospital_appointment_booking_system.service;
 
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Appointment;
 import com.health.appointment.system.hospital_appointment_booking_system.exception.AppointmentConflictException;
@@ -15,4 +15,4 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByPatientId(Long patientId);
     List<Appointment> getAppointmentsByDoctorId(Long doctorId);
     boolean isTimeSlotAvailable(Long doctorId, LocalDateTime dateTime);
-}
+}*/

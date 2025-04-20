@@ -3,6 +3,9 @@ package com.health.appointment.system.hospital_appointment_booking_system.servic
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Doctor;
 import com.health.appointment.system.hospital_appointment_booking_system.exception.DoctorNotFoundException;
 import com.health.appointment.system.hospital_appointment_booking_system.repository.DoctorRepository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,10 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    // Constructor
     public DoctorServiceImpl(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
     }
@@ -22,7 +29,9 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor saveDoctor(Doctor doctor) {
         validateDoctor(doctor);
-        return doctorRepository.save(doctor);
+        Doctor savedDoctor = doctorRepository.save(doctor);
+        clearHibernateCache();  // Clearing cache after saving
+        return savedDoctor;
     }
 
     @Override
@@ -47,7 +56,9 @@ public class DoctorServiceImpl implements DoctorService {
             throw new DoctorNotFoundException("Doctor not found with ID: " + doctor.getId());
         }
         validateDoctor(doctor);
-        return doctorRepository.save(doctor);
+        Doctor updatedDoctor = doctorRepository.save(doctor);
+        clearHibernateCache();  // Clearing cache after update
+        return updatedDoctor;
     }
 
     @Override
@@ -56,23 +67,33 @@ public class DoctorServiceImpl implements DoctorService {
             throw new DoctorNotFoundException("Doctor not found with ID: " + id);
         }
         doctorRepository.deleteById(id);
+        clearHibernateCache();  // Clearing cache after delete
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Doctor> findBySpecialization(String specialization) {
-        return doctorRepository.findBySpecializationContainingIgnoreCase(specialization);
+    public List<Doctor> findByAvailableTime(String availableTime) {
+        return doctorRepository.findByAvailableTime(availableTime);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Doctor> searchByName(String name) {
+        return doctorRepository.searchByName(name);
     }
 
     private void validateDoctor(Doctor doctor) {
         if (doctor.getName() == null || doctor.getName().isBlank()) {
             throw new IllegalArgumentException("Doctor name is required");
         }
-        if (doctor.getSpecialization() == null || doctor.getSpecialization().isBlank()) {
-            throw new IllegalArgumentException("Specialization is required");
+        if (doctor.getAvailableTime() == null || doctor.getAvailableTime().isBlank()) {
+            throw new IllegalArgumentException("Available time is required");
         }
-        if (doctor.getContact() == null || doctor.getContact().isBlank()) {
-            throw new IllegalArgumentException("Contact information is required");
-        }
+    }
+
+    // Method to clear Hibernate cache
+    private void clearHibernateCache() {
+        Session session = sessionFactory.getCurrentSession();
+        session.clear(); // Clears the first-level cache
     }
 }
