@@ -40,7 +40,7 @@ import com.health.appointment.system.hospital_appointment_booking_system.reposit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//import java.util.List;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -54,10 +54,19 @@ public class AppointmentController {
         patientRepository.save(patient);
         return ResponseEntity.ok("Appointment registered successfully");
     }
-    /*@GetMapping("")
+    // 2. Get all appointments for admin panel
+    @GetMapping("/appointments")
     public List<Patient> getAllAppointments() {
-    return patientRepository.findAll();
-}*/
+        return patientRepository.findAll();
+    }
+
+    // 3. Update doctor availability (dummy handler for now)
+    @PostMapping("/doctors/updateAvailability")
+    public ResponseEntity<String> updateAvailability(@RequestBody DoctorAvailabilityRequest request) {
+        System.out.println("Doctor Name: " + request.getDoctorName());
+        System.out.println("Availability: " + request.getAvailability());
+        return ResponseEntity.ok("Doctor availability updated successfully!");
+    }
 
 }
 

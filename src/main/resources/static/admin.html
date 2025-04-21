@@ -36,16 +36,16 @@
 
         <div id="doctorSection" class="hidden">
             <h2>Manage Doctor Availability</h2>
-            <form action="update_doctor_availability.php" method="POST">
+            <form action="/api/doctors/updateAvailability" method="POST">
                 <label for="doctorName">Doctor Name:</label>
                 <input type="text" id="doctorName" name="doctorName" required>
 
                 <label for="availability">Availability:</label>
                 <select id="availability" name="availability">
                     <option value="Select">Select</option>
-                    <option value="Morning 9AM-12PM">Morning</option>
-                    <option value="Evening 4PM-10PM">Evening</option>
-                    <option value="Morning 9AM-12PM & Evening 4PM-10PM">Both</option>
+                    <option value="Morning(9AM-12PM)">Morning(9AM-12PM)</option>
+                    <option value="Evening 4PM-10PM">Evening(4PM-10PM)</option>
+                    <option value="Morning(9AM-12PM)&Evening(4PM-10PM)">Morning(9AM-12PM)&Evening(4PM-10PM)</option>
                     <option value="Unavailable">Unavailable</option>
                 </select>
 
@@ -77,15 +77,54 @@
     </div>
 
     <script>
+        // Toggle sections
         document.getElementById("manageDoctors").addEventListener("click", function() {
             document.getElementById("doctorSection").classList.remove("hidden");
             document.getElementById("appointmentSection").classList.add("hidden");
         });
-
+    
         document.getElementById("viewAppointments").addEventListener("click", function() {
             document.getElementById("appointmentSection").classList.remove("hidden");
             document.getElementById("doctorSection").classList.add("hidden");
+            fetchAppointments();
         });
-    </script>
+        // Fetch appointments when the "View Appointments" button is clicked
+document.getElementById("viewAppointments").addEventListener("click", function() {
+    fetch('/api/appointments/appointments')
+        .then(response => response.json())
+        .then(data => {
+            let table = document.querySelector("#appointmentSection table");
+            table.innerHTML = `<tr>
+                                <th>id</th>
+                                <th>name</th>
+                                <th>age</th>
+                                <th>gender</th>
+                                <th>mobile</th>
+                                <th>city</th>
+                                <th>payment</th>
+                                <th>state</th>
+                                <th>alternate_mobile_number</th>
+                            </tr>`;  // Reset table headers
+
+            // Populate table rows with fetched data
+            data.forEach(patient => {
+                const row = table.insertRow();
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.age}</td>
+                    <td>${patient.gender}</td>
+                    <td>${patient.mobile}</td>
+                    <td>${patient.city}</td>
+                    <td>${patient.payment}</td>
+                    <td>${patient.state}</td>
+                    <td>${patient.alternateMobileNumber}</td>
+                `;
+            });
+        })
+        .catch(error => console.error('Error fetching appointments:', error));
+});
+</script>
+    
 </body>
 </html>
