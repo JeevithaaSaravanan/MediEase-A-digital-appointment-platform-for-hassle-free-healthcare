@@ -1,137 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Life Hospital</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <script>
-        function redirectToLogin() {
-            window.location.href = "login.html"; // Redirect to login page
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Life Hospital</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+   <script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const registerBtn = document.getElementById("registerBtn");
+  const formContainer = document.getElementById("registrationForm");
+  const form = document.getElementById("appointmentForm");
 
-        // Hide login form when clicking anywhere outside it
-        document.addEventListener("click", function(event) {
-            const loginForm = document.getElementById("login-container");
-            if (loginForm && !loginForm.contains(event.target)) {
-                loginForm.style.display = "none"; // Hide form
-            }
+  // Toggle form visibility
+  if (registerBtn && formContainer) {
+    registerBtn.addEventListener("click", () => {
+      formContainer.classList.remove("hidden");
+      formContainer.style.display = "block";
+    });
+
+    window.addEventListener("click", function (event) {
+      if (!formContainer.contains(event.target) && event.target !== registerBtn) {
+        formContainer.style.display = "none";
+      }
+    });
+  }
+
+  // Show/hide payment options
+  const paymentMethodSelect = document.getElementById("payment_method");
+  const cashOptions = document.getElementById("cashOptions");
+  const upiOptions = document.getElementById("upiOptions");
+  const qrCode = document.getElementById("upiQRCode");
+
+  if (paymentMethodSelect) {
+    paymentMethodSelect.addEventListener("change", function () {
+      const value = paymentMethodSelect.value;
+      cashOptions.style.display = "none";
+      upiOptions.style.display = "none";
+      qrCode.style.display = "none";
+
+      if (value === "Cash") {
+        cashOptions.style.display = "block";
+      } else if (value === "UPI") {
+        upiOptions.style.display = "block";
+        qrCode.style.display = "block";
+      }
+    });
+  }
+  // Form submission
+  if (form) {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      console.log("Form submitted");
+
+      const payload = {
+        name: form.name.value,
+        age: parseInt(form.age.value),
+        gender: form.gender.value,
+        city: form.city.value,
+        state: form.state.value,
+        mobile: form.mobile_number.value,
+        alternateMobileNumber: form.alternate_number.value || null,
+      //  appointmentDate: form.AppointmentDate.value || null,
+        payment: form.payment_method.value,
+      };
+
+      console.log("Sending payload:", payload);
+
+      fetch("/api/appointments/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => {
+          console.log("Response status:", response.status);
+          if (response.ok) {
+            alert("Appointment registered successfully!");
+            form.reset(); // Optional: clears the input fields
+            formContainer.style.display = "none"; //  Hides the form again
+          } else {
+            alert("Something went wrong. Please try again.");
+          }
+        })
+        .catch((error) => {
+          console.error("Submission error:", error);
+          alert("An error occurred. Please try again.");
         });
+    });
+  }
+});
 
-        // Show payment method options based on user selection
-        function showPaymentOptions() {
-            const paymentMethod = document.getElementById("payment_method").value;
-            const cashOptions = document.getElementById("cashOptions");
-            const upiOptions = document.getElementById("upiOptions");
-            const qrCode = document.getElementById("upiQRCode");
-
-            // Reset all payment options to be hidden first
-            cashOptions.style.display = "none";
-            upiOptions.style.display = "none";
-            qrCode.style.display = "none"; // Hide QR code initially
-
-            // Show relevant options based on the selected payment method
-            if (paymentMethod === "Cash") {
-                cashOptions.style.display = "block";
-            } else if (paymentMethod === "UPI") {
-                upiOptions.style.display = "block";
-                qrCode.style.display = "block"; // Show QR code for UPI
-            }
-        }
-    </script>
+  </script>
+  
+ 
+    
 </head>
 <body class="home-page">
-   
-    <div class="navigation">
-        <ul>
-            <li><a href="#" id="homeBtn">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a onclick="redirectToLogin()">Admin</a></li>
-        </ul>
-    </div>
 
-    <div class="content" id="mainContent">
-        <h1>Welcome to New Life Hospital</h1>
-        <p>Click below to register for an appointment.</p>
-        <button class="btn" id="registerBtn">For Appointments click here</button>
-        
-        <!-- Form Container (Initially Hidden) -->
-        <div class="form-container hidden" id="registrationForm">
-            <h2>Patient Registration Form</h2>
-            <form action="/register" method="POST">
-                <label for="name">Name <span class="required-star">*</span></label>
-                <input type="text" id="name" name="name" required>
-                
-                <label for="age">Age <span class="required-star">*</span></label>
-                <input type="number" id="age" name="age" required>
-                
-                <label for="gender">Gender <span class="required-star">*</span></label>
-                <select id="gender" name="gender" required>
-                    <option value="Select">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-                
-                <label for="city">City <span class="required-star">*</span></label>
-                <input type="text" id="city" name="city" required>
-                
-                <label for="state">State <span class="required-star">*</span></label>
-                <input type="text" id="state" name="state" required>
-                
-                <label for="mobile_number">Mobile Number <span class="required-star">*</span></label>
-                <input type="tel" id="mobile_number" name="mobile_number" required>
-                
-                <label for="alternate_number">Alternate Mobile Number </label>
-                <input type="tel" id="alternate_number" name="alternate_number">
+ <!--  Navigation -->
+  <div class="navigation">
+    <ul>
+      <li><a href="#" id="homeBtn">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a onclick=window.location.href="login.html">Admin</a></li>
+    </ul>
+  </div>
 
-                <label for="AppointmentDate">Appointment Date <span class="required-star">*</span></label>
-                <input type="date" id="AppointmentDate" name="AppointmentDate">
+  <!-- Main Content -->
+  <div class="content" id="mainContent">
+    <h1>Welcome to New Life Hospital</h1>
+    <p>Click below to register for an appointment.</p>
+    <button class="btn" id="registerBtn">For Appointments click here</button>
 
-                
-                <!-- Payment option -->
-                <label for="payment_method">Select Payment Method <span class="required-star">*</span></label>
-                <select id="payment_method" name="payment_method" required onchange="showPaymentOptions()">
-                    <option value="Select">Select</option>
-                    <option value="Cash">Cash at Doctor Visit</option>
-                    <option value="UPI">UPI Payment</option>
-                </select>
+  <!--Registration Form -->
+    <div class="form-container hidden" id="registrationForm">
+      <h2>Patient Registration Form</h2>
+      <form id="appointmentForm">
+        <label for="name">Name <span class="required-star">*</span></label>
+        <input type="text" id="name" name="name" required>
 
-                <!-- Cash Payment Options (Hidden by default) -->
-                <div id="cashOptions" style="display: none;">
-                    <label for="cashAmount">Amount to be paid at doctor visit</label>
-                 <!--   <input type="number" id="cashAmount" name="cashAmount" required> -->
-                </div>
+        <label for="age">Age <span class="required-star">*</span></label>
+        <input type="number" id="age" name="age" required>
 
-                <!-- UPI Payment Options (Hidden by default) -->
-                <div id="upiOptions" style="display: none;">
-                    <label for="upiId">Enter UPI ID:</label>
-                    <input type="text" id="upiId" name="upiId" required>
-                </div>
+        <label for="gender">Gender <span class="required-star">*</span></label>
+        <select id="gender" name="gender" required>
+          <option value="Select">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
 
-                <!-- UPI QR Code (Hidden by default) -->
-                <div id="upiQRCode" style="display: none;">
-                    <label for="upiQR">Scan the QR code for UPI Payment:</label>
-                    <img src="images/qrCode.png" alt="UPI QR Code" width="200" height="200">
-                </div>
+        <label for="city">City <span class="required-star">*</span></label>
+        <input type="text" id="city" name="city" required>
 
-                <input type="submit" value="Register Appointment">
-            </form>
+        <label for="state">State <span class="required-star">*</span></label>
+        <input type="text" id="state" name="state" required>
+
+        <label for="mobile_number">Mobile Number <span class="required-star">*</span></label>
+        <input type="tel" id="mobile_number" name="mobile_number" required>
+
+        <label for="alternate_number">Alternate Mobile Number</label>
+        <input type="tel" id="alternate_number" name="alternate_number">
+
+     <!--  <label for="AppointmentDate">Appointment Date <span class="required-star">*</span></label>
+        <input type="date" id="AppointmentDate" name="AppointmentDate" required> -->
+
+        <label for="payment_method">Select Payment Method <span class="required-star">*</span></label>
+        <select id="payment_method" name="payment_method" required>
+          <option value="Select">Select</option>
+          <option value="Cash">Cash at Doctor Visit</option>
+          <option value="UPI">UPI Payment</option>
+        </select>
+
+        <div id="cashOptions" style="display: none;">
+          <p>You will pay the amount during your visit.</p>
         </div>
-    </div>
 
-    <div class="image-gallery">
-        <img src="images/img1.jpg" alt="Hospital Image 1">
-        <img src="images/img2.jpg" alt="Hospital Image 2">
-        <img src="images/img3.jpg" alt="Hospital Image 3">
-    </div>
+        <div id="upiOptions" style="display: none;">
+          <label for="upiId">Enter UPI ID:</label>
+          <input type="text" id="upiId" name="upiId">
+        </div>
 
-    <div class="footer">
-        <p>&copy; 2025 New Life Hospital. All rights reserved.</p>
-        <p>Website designed by Jeevithaa Saravanan</p>
-    </div>
+        <div id="upiQRCode" style="display: none;">
+          <label>Scan the QR code for UPI Payment:</label>
+          <img src="images/qrCode.png" alt="UPI QR Code" width="200" height="200">
+        </div>
 
-    <script src="js/scripts.js"></script>
+        <input type="submit" value="Register Appointment">
+      </form>
+    </div>
+    
+  </div>
+
+  <!-- Image Gallery -->
+  <div class="image-gallery">
+    <img src="images/img1.jpg" alt="Hospital Image 1">
+    <img src="images/img2.jpg" alt="Hospital Image 2">
+    <img src="images/img3.jpg" alt="Hospital Image 3">
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>&copy; 2025 New Life Hospital. All rights reserved.</p>
+    <p>Website designed by Jeevithaa Saravanan</p>
+  </div>
+
+
+ 
 </body>
 </html>

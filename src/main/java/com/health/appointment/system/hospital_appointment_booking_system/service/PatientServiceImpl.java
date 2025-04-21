@@ -4,7 +4,7 @@ import com.health.appointment.system.hospital_appointment_booking_system.entity.
 import com.health.appointment.system.hospital_appointment_booking_system.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+//import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,9 +51,10 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<Patient> findByEmail(String email) {
-        return patientRepository.findByEmail(email);
+    public List<Patient> findByAge(int age) {
+        return patientRepository.findByAge(age);
     }
+
 
     @Override
     public List<Patient> findByAlternateMobileNumber(String alternateMobileNumber) {
@@ -69,8 +70,8 @@ public class PatientServiceImpl implements PatientService {
     public List<Patient> searchByName(String name) {
         return patientRepository.findByNameContainingIgnoreCase(name);
     }
-    @Override
+  /*   @Override
     public List<Patient> findByAppointmentDate(LocalDate appointmentDate) {
         return patientRepository.findByAppointmentDate(appointmentDate);
-    }
+    }*/
 }

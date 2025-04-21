@@ -39,8 +39,9 @@ public class Patient {
     public String getMobile() { return mobile; }
     public void setMobile(String mobile) { this.mobile = mobile; }
 }*/
+
+
 package com.health.appointment.system.hospital_appointment_booking_system.entity;
-import java.time.LocalDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -56,9 +57,6 @@ public class Patient {
     @Size(min = 2, max = 100, message = "Name must be between 2-100 characters")
     private String name;
 
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is mandatory")
-    private String email;
 
     @Min(value = 0, message = "Age cannot be negative")
     @Max(value = 120, message = "Age must be realistic")
@@ -83,8 +81,10 @@ public class Patient {
     @NotBlank(message = "Payment method is mandatory")
     private String payment; // Cash/Online etc.
 
-    private LocalDate appointmentDate;
-    @NotBlank(message= "Appointment date is mandarory")
+   /*  @NotNull(message = "Appointment date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate appointmentDate;*/
+
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -92,10 +92,7 @@ public class Patient {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
+    
     public int getAge() { return age; }
     public void setAge(int age) { this.age = age; }
 
@@ -115,10 +112,12 @@ public class Patient {
     public void setAlternateMobileNumber(String alternateMobileNumber) { this.alternateMobileNumber = alternateMobileNumber; }
 
     
-    public LocalDate getAppointmentDate() { return appointmentDate; }
-    public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate; }
+   // public LocalDate getAppointmentDate() { return appointmentDate; }
+    //public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate; }
 
 
     public String getPayment() { return payment; }
     public void setPayment(String payment) { this.payment = payment; }
 }
+
+

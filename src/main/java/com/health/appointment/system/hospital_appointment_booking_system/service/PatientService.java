@@ -1,7 +1,7 @@
 package com.health.appointment.system.hospital_appointment_booking_system.service;
 
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Patient;
-import java.time.LocalDate;
+//import java.time.LocalDate;
 
 import java.util.List;
 
@@ -21,7 +21,8 @@ public interface PatientService {
 
     List<Patient> findByCity(String city);
 
-    List<Patient> findByEmail(String email);
+    List<Patient> findByAge(int age);
+
 
     List<Patient> findByAlternateMobileNumber(String alternateMobileNumber);
 
@@ -29,5 +30,5 @@ public interface PatientService {
 
     List<Patient> searchByName(String name);
 
-    List<Patient> findByAppointmentDate(LocalDate appointmentDate);
+  //  List<Patient> findByAppointmentDate(LocalDate appointmentDate);
 }
