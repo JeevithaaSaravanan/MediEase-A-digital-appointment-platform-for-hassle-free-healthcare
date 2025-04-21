@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - New Life Hospital</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script>
-        function redirectToLogin() {
-            window.location.href = "login.html"; // Redirect to login page
+    <style>
+        .hidden {
+            display: none;
         }
-    </script>
+    </style>
 </head>
 <body class="admin-page" id="adminPanel">
     <div class="navigation">
@@ -31,55 +31,42 @@
             <ul>
                 <li><a href="#" id="manageDoctors">Manage Doctors</a></li>
                 <li><a href="#" id="viewAppointments">View Appointments</a></li>
-                <li><a href="#" id="trackPayments">Track Payments</a></li>
             </ul>
         </div>
 
-        <!-- Manage Doctors Section -->
         <div id="doctorSection" class="hidden">
             <h2>Manage Doctor Availability</h2>
             <form action="update_doctor_availability.php" method="POST">
                 <label for="doctorName">Doctor Name:</label>
                 <input type="text" id="doctorName" name="doctorName" required>
-                
+
                 <label for="availability">Availability:</label>
                 <select id="availability" name="availability">
                     <option value="Select">Select</option>
                     <option value="Morning 9AM-12PM">Morning</option>
                     <option value="Evening 4PM-10PM">Evening</option>
-                    <option value="Morning 9AM-12PM & Evening 4PM-10PM">Evening</option>
+                    <option value="Morning 9AM-12PM & Evening 4PM-10PM">Both</option>
                     <option value="Unavailable">Unavailable</option>
                 </select>
-                
+
                 <input type="submit" value="Update">
             </form>
         </div>
 
-        <!-- View Appointments Section -->
         <div id="appointmentSection" class="hidden">
             <h2>Appointments</h2>
             <table>
                 <tr>
-                    <th>Patient Name</th>
-                    <th>Age</th>
-                    <th>Mobile</th>
-                    <th>Doctor</th>
-                    <th>Token</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>age</th>
+                    <th>gender</th>
+                    <th>mobile</th>
+                    <th>city</th>
+                    <th>payment</th>
+                    <th>state</th>
+                    <th>alternate_mobile_number</th>
                 </tr>
-                <!-- Data to be dynamically populated -->
-            </table>
-        </div>
-
-        <!-- Track Payments Section -->
-        <div id="paymentSection" class="hidden">
-            <h2>Payment Tracking</h2>
-            <table>
-                <tr>
-                    <th>Patient Name</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                </tr>
-                <!-- Data to be dynamically populated -->
             </table>
         </div>
     </div>
@@ -89,7 +76,16 @@
         <p>Website designed by Jeevithaa Saravanan</p>
     </div>
 
-    <!-- Ensure script is linked at the end -->
-    <script src="js/scripts.js"></script>
+    <script>
+        document.getElementById("manageDoctors").addEventListener("click", function() {
+            document.getElementById("doctorSection").classList.remove("hidden");
+            document.getElementById("appointmentSection").classList.add("hidden");
+        });
+
+        document.getElementById("viewAppointments").addEventListener("click", function() {
+            document.getElementById("appointmentSection").classList.remove("hidden");
+            document.getElementById("doctorSection").classList.add("hidden");
+        });
+    </script>
 </body>
 </html>

@@ -15,7 +15,8 @@
             Invalid credentials. Please try again.
         </div>
 
-        <form action="AdminLoginServlet" method="POST">
+        <form method="POST" action="/AdminLoginServlet">
+
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
@@ -24,6 +25,10 @@
 
             <button type="submit">Login</button>
         </form>
+        
+        <!-- Button to redirect to Home Page -->
+        <br><br>
+        <button onclick="window.location.href='index.html';">Click Here for Home Page</button>
     </div>
 
     <script>
