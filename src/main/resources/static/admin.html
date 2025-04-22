@@ -9,6 +9,9 @@
         .hidden {
             display: none;
         }
+        .highlight {
+            background-color: yellow; /* Highlight matching rows */
+        }
     </style>
 </head>
 <body class="admin-page" id="adminPanel">
@@ -36,7 +39,7 @@
 
         <div id="doctorSection" class="hidden">
             <h2>Manage Doctor Availability</h2>
-            <form action="/api/doctors/updateAvailability" method="POST">
+            <form id="updateAvailabilityForm" action="/api/doctors/updateAvailability" method="POST">
                 <label for="doctorName">Doctor Name:</label>
                 <input type="text" id="doctorName" name="doctorName" required>
 
@@ -55,6 +58,7 @@
 
         <div id="appointmentSection" class="hidden">
             <h2>Appointments</h2>
+            <input type="text" id="searchBar" placeholder="Search appointments..." onkeyup="searchAppointments()">
             <table>
                 <tr>
                     <th>id</th>
@@ -88,43 +92,98 @@
             document.getElementById("doctorSection").classList.add("hidden");
             fetchAppointments();
         });
-        // Fetch appointments when the "View Appointments" button is clicked
-document.getElementById("viewAppointments").addEventListener("click", function() {
-    fetch('/api/appointments/appointments')
-        .then(response => response.json())
-        .then(data => {
-            let table = document.querySelector("#appointmentSection table");
-            table.innerHTML = `<tr>
-                                <th>id</th>
-                                <th>name</th>
-                                <th>age</th>
-                                <th>gender</th>
-                                <th>mobile</th>
-                                <th>city</th>
-                                <th>payment</th>
-                                <th>state</th>
-                                <th>alternate_mobile_number</th>
-                            </tr>`;  // Reset table headers
 
-            // Populate table rows with fetched data
-            data.forEach(patient => {
-                const row = table.insertRow();
-                row.innerHTML = `
-                    <td>${patient.id}</td>
-                    <td>${patient.name}</td>
-                    <td>${patient.age}</td>
-                    <td>${patient.gender}</td>
-                    <td>${patient.mobile}</td>
-                    <td>${patient.city}</td>
-                    <td>${patient.payment}</td>
-                    <td>${patient.state}</td>
-                    <td>${patient.alternateMobileNumber}</td>
-                `;
+        // Fetch appointments when the "View Appointments" button is clicked
+        function fetchAppointments() {
+            fetch('/api/appointments/appointments')
+                .then(response => response.json())
+                .then(data => {
+                    let table = document.querySelector("#appointmentSection table");
+                    table.innerHTML = `<tr>
+                                        <th>id</th>
+                                        <th>name</th>
+                                        <th>age</th>
+                                        <th>gender</th>
+                                        <th>mobile</th>
+                                        <th>city</th>
+                                        <th>payment</th>
+                                        <th>state</th>
+                                        <th>alternate_mobile_number</th>
+                                    </tr>`;  // Reset table headers
+
+                    // Populate table rows with fetched data
+                    data.forEach(patient => {
+                        const row = table.insertRow();
+                        row.innerHTML = ` 
+                            <td>${patient.id}</td>
+                            <td>${patient.name}</td>
+                            <td>${patient.age}</td>
+                            <td>${patient.gender}</td>
+                            <td>${patient.mobile}</td>
+                            <td>${patient.city}</td>
+                            <td>${patient.payment}</td>
+                            <td>${patient.state}</td>
+                            <td>${patient.alternateMobileNumber}</td>
+                        `;
+                    });
+                })
+                .catch(error => console.error('Error fetching appointments:', error));
+        }
+
+        // Search appointments across all fields
+        function searchAppointments() {
+            const query = document.getElementById('searchBar').value.toLowerCase();  // Get the search term and convert it to lowercase
+            const rows = document.querySelectorAll("#appointmentSection table tr:not(:first-child)");  // Get all table rows except the header
+
+            // Clear previous highlights before starting new search
+            rows.forEach(row => row.classList.remove("highlight"));
+
+            const regex = new RegExp(`\\b${query}\\b`, 'i'); // Create regex with word boundaries and case-insensitive flag
+
+            rows.forEach(row => {
+                let rowData = row.innerText.toLowerCase();  // Get all text in the row and convert to lowercase
+                if (regex.test(rowData)) {
+                    row.classList.remove("hidden");
+                    row.classList.add("highlight");  // Highlight the row if the search term matches
+                } else {
+                    row.classList.add("hidden");  // Hide the row if the search term doesn't match
+                    row.classList.remove("highlight");  // Remove any highlight if the row is hidden
+                }
             });
-        })
-        .catch(error => console.error('Error fetching appointments:', error));
-});
-</script>
-    
+        }
+
+        // Handle form submission for doctor availability update
+        document.getElementById('updateAvailabilityForm').addEventListener('submit', async function (e) {
+            e.preventDefault();  // Prevent form from submitting normally
+
+            const data = {
+                doctorName: document.getElementById('doctorName').value,
+                availability: document.getElementById('availability').value
+            };
+
+            console.log(data);  // Check the data before sending
+
+            fetch("/api/doctors/updateAvailability", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {  // Check response data if needed
+                    alert("Doctor availability updated successfully!");
+                } else {
+                    alert("Failed to update doctor availability.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while updating doctor availability.");
+            });
+        });
+    </script>
 </body>
 </html>
+
