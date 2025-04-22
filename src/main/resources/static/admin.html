@@ -10,7 +10,13 @@
             display: none;
         }
         .highlight {
-            background-color: yellow; /* Highlight matching rows */
+            background-color: yellow;
+        }
+        #noResultsMessage {
+            display: none;
+            color: red;
+            font-weight: bold;
+            padding: 10px;
         }
     </style>
 </head>
@@ -59,7 +65,7 @@
         <div id="appointmentSection" class="hidden">
             <h2>Appointments</h2>
             <input type="text" id="searchBar" placeholder="Search appointments..." onkeyup="searchAppointments()">
-            <table>
+            <table id="appointmentsTable">
                 <tr>
                     <th>id</th>
                     <th>name</th>
@@ -72,6 +78,7 @@
                     <th>alternate_mobile_number</th>
                 </tr>
             </table>
+            <div id="noResultsMessage">No appointments found.</div>
         </div>
     </div>
 
@@ -81,40 +88,46 @@
     </div>
 
     <script>
-        // Toggle sections
-        document.getElementById("manageDoctors").addEventListener("click", function() {
+        document.getElementById("manageDoctors").addEventListener("click", function () {
             document.getElementById("doctorSection").classList.remove("hidden");
             document.getElementById("appointmentSection").classList.add("hidden");
         });
-    
-        document.getElementById("viewAppointments").addEventListener("click", function() {
+
+        document.getElementById("viewAppointments").addEventListener("click", function () {
             document.getElementById("appointmentSection").classList.remove("hidden");
             document.getElementById("doctorSection").classList.add("hidden");
             fetchAppointments();
         });
 
-        // Fetch appointments when the "View Appointments" button is clicked
         function fetchAppointments() {
             fetch('/api/appointments/appointments')
                 .then(response => response.json())
                 .then(data => {
-                    let table = document.querySelector("#appointmentSection table");
-                    table.innerHTML = `<tr>
-                                        <th>id</th>
-                                        <th>name</th>
-                                        <th>age</th>
-                                        <th>gender</th>
-                                        <th>mobile</th>
-                                        <th>city</th>
-                                        <th>payment</th>
-                                        <th>state</th>
-                                        <th>alternate_mobile_number</th>
-                                    </tr>`;  // Reset table headers
+                    const table = document.querySelector("#appointmentsTable");
+                    const noResults = document.getElementById("noResultsMessage");
 
-                    // Populate table rows with fetched data
+                    table.innerHTML = `<tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>age</th>
+                        <th>gender</th>
+                        <th>mobile</th>
+                        <th>city</th>
+                        <th>payment</th>
+                        <th>state</th>
+                        <th>alternate_mobile_number</th>
+                    </tr>`;
+
+                    noResults.style.display = "none";
+
+                    if (data.length === 0) {
+                        noResults.style.display = "block";
+                        return;
+                    }
+
                     data.forEach(patient => {
                         const row = table.insertRow();
-                        row.innerHTML = ` 
+                        row.innerHTML = `
                             <td>${patient.id}</td>
                             <td>${patient.name}</td>
                             <td>${patient.age}</td>
@@ -130,60 +143,65 @@
                 .catch(error => console.error('Error fetching appointments:', error));
         }
 
-        // Search appointments across all fields
         function searchAppointments() {
-            const query = document.getElementById('searchBar').value.toLowerCase();  // Get the search term and convert it to lowercase
-            const rows = document.querySelectorAll("#appointmentSection table tr:not(:first-child)");  // Get all table rows except the header
+            const query = document.getElementById('searchBar').value.trim().toLowerCase();
+            const rows = document.querySelectorAll("#appointmentsTable tr:not(:first-child)");
+            const noResults = document.getElementById("noResultsMessage");
 
-            // Clear previous highlights before starting new search
-            rows.forEach(row => row.classList.remove("highlight"));
-
-            const regex = new RegExp(`\\b${query}\\b`, 'i'); // Create regex with word boundaries and case-insensitive flag
-
+            let anyMatch = false;
             rows.forEach(row => {
-                let rowData = row.innerText.toLowerCase();  // Get all text in the row and convert to lowercase
-                if (regex.test(rowData)) {
+                row.classList.remove("highlight", "hidden");
+                const cells = Array.from(row.cells).map(cell => cell.textContent.toLowerCase());
+
+                const matched = cells.some(cell => {
+                    return new RegExp(`\\b${query}\\b`, 'i').test(cell);
+                });
+
+                if (query && matched) {
+                    row.classList.add("highlight");
                     row.classList.remove("hidden");
-                    row.classList.add("highlight");  // Highlight the row if the search term matches
+                    anyMatch = true;
+                } else if (query) {
+                    row.classList.add("hidden");
+                    row.classList.remove("highlight");
                 } else {
-                    row.classList.add("hidden");  // Hide the row if the search term doesn't match
-                    row.classList.remove("highlight");  // Remove any highlight if the row is hidden
+                    row.classList.remove("highlight", "hidden");
+                    anyMatch = true;
                 }
             });
+
+            if (query && !anyMatch) {
+                noResults.style.display = "block";
+            } else {
+                noResults.style.display = "none";
+            }
         }
 
-        // Handle form submission for doctor availability update
-        document.getElementById('updateAvailabilityForm').addEventListener('submit', async function (e) {
-            e.preventDefault();  // Prevent form from submitting normally
-
+        document.getElementById('updateAvailabilityForm').addEventListener('submit', function (e) {
+            e.preventDefault();
             const data = {
                 doctorName: document.getElementById('doctorName').value,
                 availability: document.getElementById('availability').value
             };
 
-            console.log(data);  // Check the data before sending
-
             fetch("/api/doctors/updateAvailability", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {  // Check response data if needed
-                    alert("Doctor availability updated successfully!");
-                } else {
-                    alert("Failed to update doctor availability.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while updating doctor availability.");
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Doctor availability updated successfully!");
+                    } else {
+                        alert("Failed to update doctor availability.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while updating doctor availability.");
+                });
         });
     </script>
 </body>
 </html>
-
