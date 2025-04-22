@@ -1,99 +1,59 @@
-package com.health.appointment.system.hospital_appointment_booking_system.service;
+/*package com.health.appointment.system.hospital_appointment_booking_system.service;
 
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Doctor;
-import com.health.appointment.system.hospital_appointment_booking_system.exception.DoctorNotFoundException;
 import com.health.appointment.system.hospital_appointment_booking_system.repository.DoctorRepository;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
-@Service
-@Transactional
+@Service  // Mark this class as a Spring Service
 public class DoctorServiceImpl implements DoctorService {
 
-    private final DoctorRepository doctorRepository;
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Override
+    public Doctor updateAvailability(String doctorName, String availability) {
+        // Find the doctor by their name
+        Doctor doctor = doctorRepository.findByName(doctorName);
+        if (doctor != null) {
+            // Update the availability of the doctor
+            doctor.setAvailability(availability);
+            // Save the updated doctor back into the database
+            doctorRepository.save(doctor);
+        }
+        return doctor;  // Return the updated doctor or null if not found
+    }
+}*/
+package com.health.appointment.system.hospital_appointment_booking_system.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.health.appointment.system.hospital_appointment_booking_system.controller.DoctorAvailabilityRequest;  // Correct import for DTO
+import com.health.appointment.system.hospital_appointment_booking_system.entity.Doctor;
+import com.health.appointment.system.hospital_appointment_booking_system.repository.DoctorRepository;
+
+@Service
+public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
-    private SessionFactory sessionFactory;
-
-    // Constructor
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
-        this.doctorRepository = doctorRepository;
-    }
+    private DoctorRepository doctorRepository;
 
     @Override
-    public Doctor saveDoctor(Doctor doctor) {
-        validateDoctor(doctor);
-        Doctor savedDoctor = doctorRepository.save(doctor);
-        clearHibernateCache();  // Clearing cache after saving
-        return savedDoctor;
-    }
+    public boolean updateAvailability(DoctorAvailabilityRequest request) {
+        try {
+            Doctor doctor = doctorRepository.findByNameIgnoreCase(request.getDoctorName());
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Doctor> getDoctorById(Long id) throws DoctorNotFoundException {
-        Optional<Doctor> doctor = doctorRepository.findById(id);
-        if (doctor.isEmpty()) {
-            throw new DoctorNotFoundException("Doctor not found with ID: " + id);
+            if (doctor != null) {
+                doctor.setAvailability(request.getAvailability());
+                doctorRepository.save(doctor);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        return doctor;
-    }
-
-    @Override
-    public Doctor updateDoctor(Doctor doctor) throws DoctorNotFoundException {
-        if (!doctorRepository.existsById(doctor.getId())) {
-            throw new DoctorNotFoundException("Doctor not found with ID: " + doctor.getId());
-        }
-        validateDoctor(doctor);
-        Doctor updatedDoctor = doctorRepository.save(doctor);
-        clearHibernateCache();  // Clearing cache after update
-        return updatedDoctor;
-    }
-
-    @Override
-    public void deleteDoctor(Long id) throws DoctorNotFoundException {
-        if (!doctorRepository.existsById(id)) {
-            throw new DoctorNotFoundException("Doctor not found with ID: " + id);
-        }
-        doctorRepository.deleteById(id);
-        clearHibernateCache();  // Clearing cache after delete
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Doctor> findByAvailableTime(String availableTime) {
-        return doctorRepository.findByAvailableTime(availableTime);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Doctor> searchByName(String name) {
-        return doctorRepository.searchByName(name);
-    }
-
-    private void validateDoctor(Doctor doctor) {
-        if (doctor.getName() == null || doctor.getName().isBlank()) {
-            throw new IllegalArgumentException("Doctor name is required");
-        }
-        if (doctor.getAvailableTime() == null || doctor.getAvailableTime().isBlank()) {
-            throw new IllegalArgumentException("Available time is required");
-        }
-    }
-
-    // Method to clear Hibernate cache
-    private void clearHibernateCache() {
-        Session session = sessionFactory.getCurrentSession();
-        session.clear(); // Clears the first-level cache
     }
 }

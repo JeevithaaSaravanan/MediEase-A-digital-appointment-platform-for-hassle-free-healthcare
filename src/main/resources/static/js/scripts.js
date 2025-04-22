@@ -1,60 +1,42 @@
-// Wait until the DOM is fully loaded before executing scripts
 document.addEventListener("DOMContentLoaded", function () {
-    
-    // Admin Panel Sections
-    const doctorSection = document.getElementById('doctorSection');
-    const appointmentSection = document.getElementById('appointmentSection');
-    const paymentSection = document.getElementById('paymentSection');
-
-    // Admin Panel Navigation Links
-    const manageDoctors = document.getElementById('manageDoctors');
-    const viewAppointments = document.getElementById('viewAppointments');
-    const trackPayments = document.getElementById('trackPayments');
-     
-    // Ensure all sections are initially hidden
-    doctorSection.classList.add('hidden');
-    appointmentSection.classList.add('hidden');
-    paymentSection.classList.add('hidden');
-
-    // Manage Doctors Section
-    manageDoctors.addEventListener('click', (event) => {
-        event.preventDefault();
-        doctorSection.classList.remove('hidden');
-        appointmentSection.classList.add('hidden');
-        paymentSection.classList.add('hidden');
-    });
-
-    // View Appointments Section
-    viewAppointments.addEventListener('click', (event) => {
-        event.preventDefault();
-        doctorSection.classList.add('hidden');
-        appointmentSection.classList.remove('hidden');
-        paymentSection.classList.add('hidden');
-    });
-
-    // Track Payments Section
-    trackPayments.addEventListener('click', (event) => {
-        event.preventDefault();
-        doctorSection.classList.add('hidden');
-        appointmentSection.classList.add('hidden');
-        paymentSection.classList.remove('hidden');
-    });
-});
-//JavaScript to handle the form toggling behavior
-    document.getElementById('registerBtn').addEventListener('click', function() {
-        document.getElementById('registrationForm').style.display = 'block';
-    });
-
-    // Close the form when the user clicks anywhere outside the form container
-    window.addEventListener('click', function(event) {
-        const formContainer = document.getElementById('registrationForm');
-        
-        // If the click is outside the form, hide the form
-        if (!formContainer.contains(event.target) && event.target !== document.getElementById('registerBtn')) {
-            formContainer.style.display = 'none';
+    const registerBtn = document.getElementById("registerBtn");
+    const formContainer = document.getElementById("registrationForm");
+    const form = document.getElementById("appointmentForm");
+  
+    // Toggle form visibility
+    if (registerBtn && formContainer) {
+      registerBtn.addEventListener("click", () => {
+        formContainer.classList.remove("hidden");
+        formContainer.style.display = "block";
+      });
+  
+      window.addEventListener("click", function (event) {
+        if (!formContainer.contains(event.target) && event.target !== registerBtn) {
+          formContainer.style.display = "none";
         }
-    });
-    // Show/Hide Registration Form
-    registerBtn.addEventListener('click', () => {
-        registrationForm.classList.toggle('hidden');
-    });
+      });
+    }
+  
+    // Show/hide payment options
+    const paymentMethodSelect = document.getElementById("payment_method");
+    const cashOptions = document.getElementById("cashOptions");
+    const upiOptions = document.getElementById("upiOptions");
+    const qrCode = document.getElementById("upiQRCode");
+  
+    if (paymentMethodSelect) {
+      paymentMethodSelect.addEventListener("change", function () {
+        const value = paymentMethodSelect.value;
+        cashOptions.style.display = "none";
+        upiOptions.style.display = "none";
+        qrCode.style.display = "none";
+  
+        if (value === "Cash") {
+          cashOptions.style.display = "block";
+        } else if (value === "UPI") {
+          upiOptions.style.display = "block";
+          qrCode.style.display = "block";
+        }
+      });
+    }
+});
+  

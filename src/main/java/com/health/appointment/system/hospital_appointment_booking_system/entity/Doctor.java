@@ -14,16 +14,16 @@ public class Doctor {
     @NotBlank(message = "Name is required")
     @Size(max = 100, message = "Name must be less than 100 characters")
     private String name;
+     
+    @NotBlank(message = "Availability is required")
+     private String availability;
 
-    @NotBlank(message = "Available time is required")
-    private String availableTime;
 
     // Constructors
     public Doctor() {}
 
-    public Doctor(String name, String availableTime) {
-        this.name = name;
-        this.availableTime = availableTime;
+    public void setAvailability(String availability) {
+        this.availability = availability;
     }
 
     // Getters and Setters
@@ -33,6 +33,8 @@ public class Doctor {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getAvailableTime() { return availableTime; }
-    public void setAvailableTime(String availableTime) { this.availableTime = availableTime; }
+    public String getAvailability() {
+        return availability;
+    }
+
 }

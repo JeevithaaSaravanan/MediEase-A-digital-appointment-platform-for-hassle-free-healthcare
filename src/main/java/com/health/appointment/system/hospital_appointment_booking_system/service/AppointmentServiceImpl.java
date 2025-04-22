@@ -82,3 +82,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 }*/
+/*package com.health.appointment.system.hospital_appointment_booking_system.service;
+
+import com.health.appointment.system.hospital_appointment_booking_system.entity.Patient;
+import com.health.appointment.system.hospital_appointment_booking_system.repository.PatientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class AppointmentServiceImpl implements AppointmentService {
+
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Override
+    public List<Patient> getAllAppointments() {
+        return patientRepository.findAll(); // Assumes findAll() works based on your PatientRepository setup
+    }
+}*/

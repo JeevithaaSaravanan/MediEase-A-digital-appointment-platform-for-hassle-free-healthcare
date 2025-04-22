@@ -16,3 +16,11 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByDoctorId(Long doctorId);
     boolean isTimeSlotAvailable(Long doctorId, LocalDateTime dateTime);
 }*/
+/*package com.health.appointment.system.hospital_appointment_booking_system.service;
+
+import com.health.appointment.system.hospital_appointment_booking_system.entity.Patient;
+import java.util.List;
+
+public interface AppointmentService {
+    List<Patient> getAllAppointments(); // Ensure that this method signature is correct and functional
+}*/

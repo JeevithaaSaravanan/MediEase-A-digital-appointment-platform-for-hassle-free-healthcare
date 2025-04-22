@@ -1,54 +1,53 @@
-package com.health.appointment.system.hospital_appointment_booking_system.controller;
-
-import com.health.appointment.system.hospital_appointment_booking_system.entity.Doctor;
+/*package com.health.appointment.system.hospital_appointment_booking_system.controller;
 import com.health.appointment.system.hospital_appointment_booking_system.service.DoctorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/doctors")
-@CrossOrigin(origins = "*")
 public class DoctorController {
 
     @Autowired
     private DoctorService doctorService;
 
-    // Save a new doctor
-    @PostMapping
-    public Doctor saveDoctor(@RequestBody Doctor doctor) {
-        return doctorService.saveDoctor(doctor);
+    @PostMapping("/updateAvailability")
+    public ResponseEntity<String> updateAvailability(@RequestBody DoctorAvailabilityRequest request) {
+        doctorService.updateAvailability(request.getDoctorName(), request.getAvailability());
+        return ResponseEntity.ok("Availability updated successfully");
     }
+}*/
+package com.health.appointment.system.hospital_appointment_booking_system.controller;
 
-    // Get all doctors
-    @GetMapping
-    public List<Doctor> getAllDoctors() {
-        return doctorService.getAllDoctors();
-    }
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-    // Get doctor by ID
-    @GetMapping("/{id}")
-    public Optional<Doctor> getDoctorById(@PathVariable Long id) {
-        return doctorService.getDoctorById(id);
-    }
+import com.health.appointment.system.hospital_appointment_booking_system.service.DoctorService;  // Correct import
 
-    // Delete doctor by ID
-    @DeleteMapping("/{id}")
-    public void deleteDoctor(@PathVariable Long id) {
-        doctorService.deleteDoctor(id);
-    }
+@RestController
+@RequestMapping("/api/doctors")
+public class DoctorController {
 
-    // Get doctors by available time (e.g., "Morning", "Evening")
-    @GetMapping("/availableTime/{availableTime}")
-    public List<Doctor> getDoctorsByAvailableTime(@PathVariable String availableTime) {
-        return doctorService.findByAvailableTime(availableTime);
-    }
+    @Autowired
+    private DoctorService doctorService;
 
-    // Search doctors by name (partial or full match)
-    @GetMapping("/search/{name}")
-    public List<Doctor> searchDoctorsByName(@PathVariable String name) {
-        return doctorService.searchByName(name);
+    @PostMapping("/updateAvailability")
+public ResponseEntity<String> updateDoctorAvailability(@RequestBody DoctorAvailabilityRequest request) {
+    try {
+        boolean success = doctorService.updateAvailability(request);
+
+        if (success) {
+            return ResponseEntity.ok("Doctor availability updated");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Doctor not found or failed to update availability.");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while updating doctor availability.");
     }
+}
 }
