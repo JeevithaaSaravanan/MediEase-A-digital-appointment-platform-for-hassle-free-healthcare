@@ -5,106 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>New Life Hospital</title>
   <link rel="stylesheet" href="css/styles.css"/>
-   <script>
-   document.addEventListener("DOMContentLoaded", function () {
-  const registerBtn = document.getElementById("registerBtn");
-  const formContainer = document.getElementById("registrationForm");
-  const form = document.getElementById("appointmentForm");
-
-  // Toggle form visibility
-  if (registerBtn && formContainer) {
-    registerBtn.addEventListener("click", () => {
-      formContainer.classList.remove("hidden");
-      formContainer.style.display = "block";
-    });
-
-    window.addEventListener("click", function (event) {
-      if (!formContainer.contains(event.target) && event.target !== registerBtn) {
-        formContainer.style.display = "none";
-      }
-    });
-  }
-
-  // Show/hide payment options
-  const paymentMethodSelect = document.getElementById("payment_method");
-  const cashOptions = document.getElementById("cashOptions");
-  const upiOptions = document.getElementById("upiOptions");
-  const qrCode = document.getElementById("upiQRCode");
-
-  if (paymentMethodSelect) {
-    paymentMethodSelect.addEventListener("change", function () {
-      const value = paymentMethodSelect.value;
-      cashOptions.style.display = "none";
-      upiOptions.style.display = "none";
-      qrCode.style.display = "none";
-
-      if (value === "Cash") {
-        cashOptions.style.display = "block";
-      } else if (value === "UPI") {
-        upiOptions.style.display = "block";
-        qrCode.style.display = "block";
-      }
-    });
-  }
-  // Form submission
-  if (form) {
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      console.log("Form submitted");
-
-      const payload = {
-        name: form.name.value,
-        age: parseInt(form.age.value),
-        gender: form.gender.value,
-        city: form.city.value,
-        state: form.state.value,
-        mobile: form.mobile_number.value,
-        alternateMobileNumber: form.alternate_number.value || null,
-      //  appointmentDate: form.AppointmentDate.value || null,
-        payment: form.payment_method.value,
-      };
-
-      console.log("Sending payload:", payload);
-
-      fetch("/api/appointments/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      })
-        .then((response) => {
-          console.log("Response status:", response.status);
-          if (response.ok) {
-            alert("Appointment registered successfully!");
-            form.reset(); // Optional: clears the input fields
-            formContainer.style.display = "none"; //  Hides the form again
-          } else {
-            alert("Something went wrong. Please try again.");
-          }
-        })
-        .catch((error) => {
-          console.error("Submission error:", error);
-          alert("An error occurred. Please try again.");
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const registerBtn = document.getElementById("registerBtn");
+      const formContainer = document.getElementById("registrationForm");
+      const form = document.getElementById("appointmentForm");
+  
+      // Toggle form visibility
+      if (registerBtn && formContainer) {
+        registerBtn.addEventListener("click", () => {
+          formContainer.classList.remove("hidden");
+          formContainer.style.display = "block";
         });
+  
+        window.addEventListener("click", function (event) {
+          if (!formContainer.contains(event.target) && event.target !== registerBtn) {
+            formContainer.style.display = "none";
+          }
+        });
+      }
+  
+      // Show/hide payment options
+      const paymentMethodSelect = document.getElementById("payment_method");
+      const cashOptions = document.getElementById("cashOptions");
+      const upiOptions = document.getElementById("upiOptions");
+      const qrCode = document.getElementById("upiQRCode");
+  
+      if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener("change", function () {
+          const value = paymentMethodSelect.value;
+          cashOptions.style.display = "none";
+          upiOptions.style.display = "none";
+          qrCode.style.display = "none";
+  
+          if (value === "Cash") {
+            cashOptions.style.display = "block";
+          } else if (value === "UPI") {
+            upiOptions.style.display = "block";
+            qrCode.style.display = "block";
+          }
+        });
+      }
+  
+      // Form submission
+      if (form) {
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          console.log("Form submitted");
+  
+          const payload = {
+            name: form.name.value,
+            age: parseInt(form.age.value),
+            gender: form.gender.value,
+            city: form.city.value,
+            state: form.state.value,
+            mobile: form.mobile_number.value,
+            alternateMobileNumber: form.alternate_number.value || null,
+            payment: form.payment_method.value,
+          };
+  
+          console.log("Sending payload:", payload);
+  
+          fetch("/api/appointments/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          })
+          .then((response) => {
+            console.log("Response status:", response.status);
+            if (response.ok) {
+              alert("Appointment registered successfully!");
+              form.reset(); // Optional: clears the input fields
+              formContainer.style.display = "none"; // Hides the form again
+            } else {
+              alert("Something went wrong. Please try again.");
+            }
+          })
+          .catch((error) => {
+            console.error("Submission error:", error);
+            alert("An error occurred. Please try again.");
+          });
+        });
+      }
+  
+      // Doctor availability panel functionality
+      const checkDoctorAvailabilityBtn = document.getElementById("checkDoctorAvailabilityBtn");
+      const doctorAvailabilityPanel = document.getElementById("doctorAvailabilityPanel");
+      const doctorNameElem = document.getElementById("doctorName");
+      const doctorAvailabilityElem = document.getElementById("doctorAvailability");
+  
+      // Fetch doctor availability when the button is clicked
+      checkDoctorAvailabilityBtn.addEventListener("click", function () {
+        fetchDoctorAvailability(); // Fetch latest availability on button click
+      });
+  
+      // Function to fetch doctor availability
+      function fetchDoctorAvailability() {
+        fetch("/api/doctors/latest")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data) {
+              // Clear previous data
+              doctorNameElem.textContent = "Doctor Name: ";
+              doctorAvailabilityElem.textContent = "Availability: ";
+              
+              // Update with new data
+              doctorNameElem.textContent = "Doctor Name: " + data.name;
+              doctorAvailabilityElem.textContent = "Availability: " + data.availability;
+              doctorAvailabilityPanel.style.display = "block"; // Show the panel
+            } else {
+              alert("No doctor data found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching doctor data:", error);
+            alert("An error occurred. Please try again.");
+          });
+      }
+  
+      // Close panel when clicking outside the panel
+      window.addEventListener("click", function (event) {
+        if (!doctorAvailabilityPanel.contains(event.target) && event.target !== checkDoctorAvailabilityBtn) {
+          doctorAvailabilityPanel.style.display = "none"; // Hide the panel
+        }
+      });
+  
+      // Close panel when clicking on the close button (×)
+      doctorAvailabilityPanel.addEventListener("click", function (event) {
+        if (event.target === doctorAvailabilityPanel.querySelector("::after")) {
+          doctorAvailabilityPanel.style.display = "none";
+        }
+      });
     });
-  }
-});
-
   </script>
   
- 
-    
+        
 </head>
 <body class="home-page">
 
- <!--  Navigation -->
+  <!-- Navigation -->
   <div class="navigation">
     <ul>
       <li><a href="#" id="homeBtn">Home</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a onclick=window.location.href="login.html">Admin</a></li>
+      <li><a onclick="window.location.href='login.html'">Admin</a></li>
     </ul>
   </div>
 
@@ -114,7 +161,19 @@
     <p>Click below to register for an appointment.</p>
     <button class="btn" id="registerBtn">For Appointments click here</button>
 
-  <!--Registration Form -->
+    <!-- Button to check doctor availability -->
+    <button class="btn" id="checkDoctorAvailabilityBtn">Check Doctor Availability Before Registration</button>
+
+    <!-- Panel to display doctor availability -->
+    <div id="doctorAvailabilityPanel" class="hidden">
+      <div class="panel-content">
+        <h3>Doctor Availability</h3>
+        <p id="doctorName">Doctor Name: </p>
+        <p id="doctorAvailability">Availability: </p>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
     <div class="form-container hidden" id="registrationForm">
       <h2>Patient Registration Form</h2>
       <form id="appointmentForm">
@@ -143,9 +202,6 @@
 
         <label for="alternate_number">Alternate Mobile Number</label>
         <input type="tel" id="alternate_number" name="alternate_number">
-
-     <!--  <label for="AppointmentDate">Appointment Date <span class="required-star">*</span></label>
-        <input type="date" id="AppointmentDate" name="AppointmentDate" required> -->
 
         <label for="payment_method">Select Payment Method <span class="required-star">*</span></label>
         <select id="payment_method" name="payment_method" required>
@@ -187,7 +243,5 @@
     <p>Website designed by Jeevithaa Saravanan</p>
   </div>
 
-
- 
 </body>
 </html>

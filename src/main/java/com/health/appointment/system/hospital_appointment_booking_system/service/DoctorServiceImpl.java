@@ -1,35 +1,10 @@
-/*package com.health.appointment.system.hospital_appointment_booking_system.service;
-
-import com.health.appointment.system.hospital_appointment_booking_system.entity.Doctor;
-import com.health.appointment.system.hospital_appointment_booking_system.repository.DoctorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-@Service  // Mark this class as a Spring Service
-public class DoctorServiceImpl implements DoctorService {
-
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Override
-    public Doctor updateAvailability(String doctorName, String availability) {
-        // Find the doctor by their name
-        Doctor doctor = doctorRepository.findByName(doctorName);
-        if (doctor != null) {
-            // Update the availability of the doctor
-            doctor.setAvailability(availability);
-            // Save the updated doctor back into the database
-            doctorRepository.save(doctor);
-        }
-        return doctor;  // Return the updated doctor or null if not found
-    }
-}*/
 package com.health.appointment.system.hospital_appointment_booking_system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.health.appointment.system.hospital_appointment_booking_system.controller.DoctorAvailabilityRequest;  // Correct import for DTO
+import com.health.appointment.system.hospital_appointment_booking_system.controller.DoctorAvailabilityRequest;
 import com.health.appointment.system.hospital_appointment_booking_system.entity.Doctor;
 import com.health.appointment.system.hospital_appointment_booking_system.repository.DoctorRepository;
 
@@ -40,17 +15,22 @@ public class DoctorServiceImpl implements DoctorService {
     private DoctorRepository doctorRepository;
 
     @Override
+    @Transactional
     public boolean updateAvailability(DoctorAvailabilityRequest request) {
         try {
-            Doctor doctor = doctorRepository.findByNameIgnoreCase(request.getDoctorName());
+            String name = request.getDoctorName().trim();
+            String availability = request.getAvailability();
 
-            if (doctor != null) {
-                doctor.setAvailability(request.getAvailability());
-                doctorRepository.save(doctor);
-                return true;
-            } else {
-                return false;
-            }
+            // Always create a new Doctor object (NO checking for existing doctor)
+            Doctor doctor = new Doctor();
+            doctor.setName(name);
+            doctor.setAvailability(availability);
+
+            doctorRepository.save(doctor);  // Always inserts new record
+
+            System.out.println("Doctor inserted: " + doctor.getName() + " - " + doctor.getAvailability());
+            return true;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;

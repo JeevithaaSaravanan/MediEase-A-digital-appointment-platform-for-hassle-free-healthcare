@@ -177,11 +177,16 @@
             }
         }
 
+        // Handle form submission for updating doctor availability
         document.getElementById('updateAvailabilityForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+            e.preventDefault();  // Prevent the default form submission
+
+            const doctorName = document.getElementById('doctorName').value.trim();
+            const availability = document.getElementById('availability').value;
+
             const data = {
-                doctorName: document.getElementById('doctorName').value,
-                availability: document.getElementById('availability').value
+                doctorName: doctorName,
+                availability: availability
             };
 
             fetch("/api/doctors/updateAvailability", {
@@ -189,18 +194,14 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Doctor availability updated successfully!");
-                    } else {
-                        alert("Failed to update doctor availability.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("An error occurred while updating doctor availability.");
-                });
+            .then(response => response.text())  // Changed from response.json()
+            .then(message => {
+                alert(message);  // Show plain text message from backend
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while updating doctor availability.");
+            });
         });
     </script>
 </body>
