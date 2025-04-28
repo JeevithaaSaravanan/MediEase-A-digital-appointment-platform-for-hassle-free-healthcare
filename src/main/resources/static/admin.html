@@ -40,6 +40,7 @@
             <ul>
                 <li><a href="#" id="manageDoctors">Manage Doctors</a></li>
                 <li><a href="#" id="viewAppointments">View Appointments</a></li>
+                <li><a href="#" id="changeCredentials">Change Admin Credentials</a></li> <!-- New Subheading -->
             </ul>
         </div>
 
@@ -80,6 +81,21 @@
             </table>
             <div id="noResultsMessage">No appointments found.</div>
         </div>
+
+        <!-- New Section for Updating Admin Credentials -->
+        <div id="credentialsSection" class="hidden">
+            <h2>Change Admin Credentials</h2>
+            <form id="updateCredentialsForm">
+                <label for="newUsername">New Username:</label>
+                <input type="text" id="newUsername" name="newUsername" required><br><br>
+
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required><br><br>
+
+                <button type="submit">Update Credentials</button>
+            </form>
+        </div>
+
     </div>
 
     <div class="footer">
@@ -91,12 +107,21 @@
         document.getElementById("manageDoctors").addEventListener("click", function () {
             document.getElementById("doctorSection").classList.remove("hidden");
             document.getElementById("appointmentSection").classList.add("hidden");
+            document.getElementById("credentialsSection").classList.add("hidden"); // Hide others
         });
 
         document.getElementById("viewAppointments").addEventListener("click", function () {
             document.getElementById("appointmentSection").classList.remove("hidden");
             document.getElementById("doctorSection").classList.add("hidden");
+            document.getElementById("credentialsSection").classList.add("hidden"); // Hide others
             fetchAppointments();
+        });
+
+        // New: Show credentials section
+        document.getElementById("changeCredentials").addEventListener("click", function () {
+            document.getElementById("credentialsSection").classList.remove("hidden");
+            document.getElementById("doctorSection").classList.add("hidden");
+            document.getElementById("appointmentSection").classList.add("hidden");
         });
 
         function fetchAppointments() {
@@ -179,8 +204,7 @@
 
         // Handle form submission for updating doctor availability
         document.getElementById('updateAvailabilityForm').addEventListener('submit', function (e) {
-            e.preventDefault();  // Prevent the default form submission
-
+            e.preventDefault();
             const doctorName = document.getElementById('doctorName').value.trim();
             const availability = document.getElementById('availability').value;
 
@@ -194,13 +218,37 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             })
-            .then(response => response.text())  // Changed from response.json()
+            .then(response => response.text())
             .then(message => {
-                alert(message);  // Show plain text message from backend
+                alert(message);
             })
             .catch(error => {
                 console.error("Error:", error);
                 alert("An error occurred while updating doctor availability.");
+            });
+        });
+
+        // Handle form submission for updating admin credentials
+        document.getElementById('updateCredentialsForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+
+            fetch("/updateAdminCredentials", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `newUsername=${encodeURIComponent(username)}&newPassword=${encodeURIComponent(password)}`
+
+            })
+            .then(response => response.text())
+            .then(message => {
+                alert(message);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to update credentials");
             });
         });
     </script>

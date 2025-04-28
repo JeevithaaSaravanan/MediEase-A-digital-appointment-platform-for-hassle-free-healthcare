@@ -342,3 +342,49 @@ table th {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
+#credentialsSection {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin: 20px auto; /* Center horizontally */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+#credentialsSection h2 {
+    text-align: center;
+    color: #333;
+}
+
+#updateCredentialsForm {
+    display: flex;
+    flex-direction: column;
+}
+
+#updateCredentialsForm label {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+#updateCredentialsForm input {
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#updateCredentialsForm button {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#updateCredentialsForm button:hover {
+    background-color: #45a049;
+}
+
