@@ -30,7 +30,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId> <!-- Contains all web annotations -->
         </dependency>
-		<dependency>
+        <dependency>
 			<groupId>com.mysql</groupId>  <!-- Changed from 'mysql' -->
 			<artifactId>mysql-connector-j</artifactId>  <!-- Changed from 'mysql-connector-java' -->
 			<version>8.0.33</version>
