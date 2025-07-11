@@ -3,28 +3,39 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.4
+    container_name: mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: springdb
+      MYSQL_DATABASE: hospital_db                 # ← matches MYSQL_DB
       MYSQL_USER: springuser
       MYSQL_PASSWORD: springpass
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./infrastructure/mysql/init:/docker-entrypoint-initdb.d
     networks: [backend]
 
   spring:
     build: .
+    container_name: spring
     restart: unless-stopped
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springdb
-      SPRING_DATASOURCE_USERNAME: springuser
-      SPRING_DATASOURCE_PASSWORD: springpass
+      # --- values consumed by application.properties ---
+      SERVER_PORT: 8082
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: hospital_db
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: springpass
+      HIBERNATE_DDL_AUTO: update
     depends_on: [mysql]
     networks: [backend]
+    expose:
+      - "8082"                           # internal port
 
   nginx:
     build: ./infrastructure/nginx
+    container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -36,6 +47,7 @@ services:
 
   certbot:
     image: certbot/certbot:latest
+    container_name: certbot
     volumes:
       - certbot-www:/var/www/certbot
       - certbot-conf:/etc/letsencrypt
