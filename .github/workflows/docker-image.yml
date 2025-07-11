@@ -8,8 +8,8 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_SPRING: jsk2004/Hospital-spring
-  IMAGE_NGINX:  jsk2004/Hospital-nginx
+  IMAGE_SPRING: jsk2004/hospital-spring
+  IMAGE_NGINX:  jsk2004/hospital-nginx
 
 jobs:
   build-and-push:
