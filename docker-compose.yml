@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: springdb
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: springpass
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./infrastructure/mysql/init:/docker-entrypoint-initdb.d
+    networks: [backend]
+
+  spring:
+    build: .
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springdb
+      SPRING_DATASOURCE_USERNAME: springuser
+      SPRING_DATASOURCE_PASSWORD: springpass
+    depends_on: [mysql]
+    networks: [backend]
+
+  nginx:
+    build: ./infrastructure/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certbot-www:/var/www/certbot
+      - certbot-conf:/etc/letsencrypt
+    depends_on: [spring]
+    networks: [frontend, backend]
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot-www:/var/www/certbot
+      - certbot-conf:/etc/letsencrypt
+    entrypoint: >
+      sh -c "
+        certbot certonly
+        --webroot -w /var/www/certbot
+        --email you@example.com --agree-tos --no-eff-email
+        -d newlifehospital.duckdns.org &&
+        crond -f
+      "
+    networks: [frontend]
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  mysql-data:
+  certbot-www:
+  certbot-conf:
