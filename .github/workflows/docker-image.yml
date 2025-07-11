@@ -1,0 +1,50 @@
+name: Build & Push Docker Images (latest tag only)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  REGISTRY: docker.io
+  IMAGE_SPRING: yourhub/yourrepo-spring
+  IMAGE_NGINX:  yourhub/yourrepo-nginx
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout code ──────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Set up Docker Buildx ───────────────────────────────
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ── Log in to Docker Hub ───────────────────────────────
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # ── Build & push Spring Boot image (latest) ────────────
+      - name: Build & push Spring image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_SPRING }}:latest
+
+      # ── Build & push Nginx image (latest) ──────────────────
+      - name: Build & push Nginx image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./infrastructure/nginx
+          file: ./infrastructure/nginx/Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_NGINX }}:latest
