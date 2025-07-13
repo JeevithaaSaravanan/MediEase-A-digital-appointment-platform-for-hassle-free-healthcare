@@ -6,11 +6,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000") // Allow frontend to access
-                .allowedMethods("POST", "GET", "PUT", "DELETE") // Allowed HTTP methods
-                .allowedHeaders("*"); // Allow all headers
+                .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://newlifehospital.duckdns.org"
+                )
+                .allowedMethods("GET","POST","PUT","PATCH","DELETE","OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)   // only if you send cookies / Authorization header
+                .maxAge(3600);
     }
 }
