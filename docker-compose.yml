@@ -1,8 +1,8 @@
-version: "3.9"
-
 services:
+  # ───────── MySQL ─────────
   mysql:
     image: mysql:8.4
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: springdb
@@ -13,8 +13,10 @@ services:
       - ./infrastructure/mysql/init:/docker-entrypoint-initdb.d
     networks: [backend]
 
+  # ───────── Spring Boot ───
   spring:
     build: .
+    container_name: spring              # <-- resolves as 'spring'
     restart: unless-stopped
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springdb
@@ -22,38 +24,61 @@ services:
       SPRING_DATASOURCE_PASSWORD: springpass
     depends_on: [mysql]
     networks: [backend]
+    expose:
+      - "8082"
 
+  # ───────── Nginx proxy ───
   nginx:
     build: ./infrastructure/nginx
+    container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - certbot-www:/var/www/certbot
-      - certbot-conf:/etc/letsencrypt
+      - certbot-www:/var/www/certbot        # ACME webroot
+      - certbot-conf:/etc/letsencrypt       # Certs
     depends_on: [spring]
     networks: [frontend, backend]
 
-  certbot:
+  # ───────── Certbot one‑shot ────────────
+  certbot-init:
     image: certbot/certbot:latest
+    container_name: certbot-init
+    depends_on: [nginx]                     # wait for HTTP port
+    volumes:
+      - certbot-www:/var/www/certbot
+      - certbot-conf:/etc/letsencrypt
+    command: >
+      certonly --webroot
+      --webroot-path=/var/www/certbot
+      --email jeevithaasaravanan16@gmail.com
+      --agree-tos --no-eff-email
+      -d newlifehospital.duckdns.org
+
+  # ───────── Certbot renew (idle) ────────
+  certbot-renew:
+    image: certbot/certbot:latest
+    container_name: certbot-renew
     volumes:
       - certbot-www:/var/www/certbot
       - certbot-conf:/etc/letsencrypt
     entrypoint: >
-      sh -c "
-        certbot certonly
-        --webroot -w /var/www/certbot
-        --email you@example.com --agree-tos --no-eff-email
-        -d newlifehospital.duckdns.org &&
-        crond -f
-      "
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --quiet --webroot -w /var/www/certbot &&
+               nginx -s reload;
+               sleep 12h;
+             done"
     networks: [frontend]
-
-networks:
-  frontend:
-  backend:
+    depends_on: [nginx]
+    restart: unless-stopped
 
 volumes:
   mysql-data:
   certbot-www:
   certbot-conf:
+
+networks:
+  frontend:
+  backend:
